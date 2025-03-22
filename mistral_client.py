@@ -1,6 +1,6 @@
 import requests
 
-API_KEY = "your_mistral_api_key"
+API_KEY = "gNx4TcqVfBtt1XXTROmF5vBcBnJA5a6S"
 ENDPOINT = "https://api.mistral.ai/generate"
 
 def get_mistral_response(prompt):

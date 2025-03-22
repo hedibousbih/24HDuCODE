@@ -3,7 +3,7 @@ import requests
 class RestaurantReservationTool:
     def __init__(self):
         self.api_url = "https://hotel-api.com/restaurant"
-        self.api_key = "hotel_api_key"
+        self.api_key = "Token 8jW6Dy4TCHGXTJVTJKi0zK5iBFxAIWOZ"
 
     def reserve_table(self, reservation_details):
         response = requests.post(
