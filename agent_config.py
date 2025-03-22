@@ -8,7 +8,7 @@ restaurant_tool = Tool.from_function(
     func=get_restaurants,
     name="getRestaurants",
     description="Utilise cette fonction pour obtenir la liste des restaurants disponibles à l'hôtel.",
-    verbose=True,
+    
     handle_parsing_errors=True
 )
 load_dotenv()

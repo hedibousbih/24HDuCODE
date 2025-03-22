@@ -1,46 +1,43 @@
-# app.py
+# front.py
 import streamlit as st
 from gtts import gTTS
 import os
 import tempfile
 from langchain_core.messages import HumanMessage
+from agent_config import agent  # Ton agent avec le tool get_restaurants
 
-# Simulation d'un agent (remplace plus tard par `from agent import app`)
-def fake_response(history):
-    return type("FakeResponse", (), {"content": " saha chribtek stack over harissa 🤖."})()
-
-# Streamlit config
+# Configuration de la page Streamlit
 st.set_page_config(page_title="Assistant Hôtel California", layout="centered")
 st.title("🏨 Assistant IA – Hôtel California")
 
-# Mémoire de conversation utilisateur
+# Initialisation de l'historique utilisateur
 if "history" not in st.session_state:
     st.session_state.history = []
 
-# 🔊 Synthèse vocale
+# 🔊 Fonction pour lire le texte avec gTTS
 def speak(text):
     tts = gTTS(text=text, lang='fr')
     with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as fp:
         tts.save(fp.name)
         st.audio(fp.name, format="audio/mp3")
 
-# 💬 Interface chat
-user_input = st.chat_input("Posez une question...")
+# 💬 Interface du chat
+user_input = st.chat_input("Posez une question sur les restaurants, les spas, etc.")
 if user_input:
-    # Affiche la question de l'utilisateur
+    # Affichage de la question de l'utilisateur
     with st.chat_message("user"):
         st.markdown(user_input)
 
-    # Ajouter à l'historique
+    # Ajouter le message utilisateur à l'historique
     st.session_state.history.append(HumanMessage(content=user_input))
 
-    # 🔁 Appel simulé à un agent (remplace plus tard par `app.invoke(...)`)
-    response = fake_response(st.session_state.history)
+    # Appel à l'agent
+    response = agent.invoke(user_input)  # ← Renvoie un dict avec 'input' et 'output'
 
-    # Affiche la réponse de l’assistant
+    # Affichage de la réponse de l'assistant
     with st.chat_message("assistant"):
-        st.markdown(response.content)
-        speak(response.content)
+        st.markdown(response["output"])   # ✅ On récupère juste le texte à afficher
+        speak(response["output"])         # ✅ Et on le lit avec gTTS
 
-    # Ajouter à l’historique
-    st.session_state.history.append(response)
+    # Ajouter la réponse dans l'historique
+    st.session_state.history.append(response["output"])
