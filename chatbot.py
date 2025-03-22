@@ -1,0 +1,73 @@
+# camille_assistant.py
+
+import os
+import uuid
+from langchain.chat_models import init_chat_model
+from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
+from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langgraph.graph import StateGraph, START, MessagesState
+from langgraph.checkpoint.memory import MemorySaver
+from dotenv import load_dotenv, find_dotenv
+
+load_dotenv(find_dotenv())
+api_key = os.getenv("MISTRAL_API_KEY")
+if not api_key:
+    raise ValueError("MISTRAL_API_KEY not found in .env file")
+
+# Charger la clé API Mistral
+if not os.environ.get("MISTRAL_API_KEY"):
+    from getpass import getpass
+    os.environ["MISTRAL_API_KEY"] = getpass("Enter Mistral API key: ")
+
+# Initialiser le modèle Mistral
+model = init_chat_model("mistral-large-latest", model_provider="mistralai")
+
+# Créer le prompt de Camille
+prompt_template = ChatPromptTemplate.from_messages([
+    SystemMessage(content=(
+        "Tu es Camille, l'assistante virtuelle de l’Hôtel California. "
+        "Tu es serviable, polie, toujours prête à aider les clients. "
+        "Tu parles plusieurs langues, principalement le français et l’anglais. "
+        "Adapte ta réponse à la langue du client automatiquement. "
+        "Si tu ne comprends pas, demande poliment plus de détails. "
+        "Fais tout ton possible pour créer une expérience agréable."
+    )),
+    MessagesPlaceholder(variable_name="messages")
+])
+
+# Fonction de traitement des messages
+def call_model(state: MessagesState):
+    prompt = prompt_template.invoke(state)
+    response = model.invoke(prompt)
+    return {"messages": state["messages"] + [response]}
+
+# Créer le graph LangGraph
+workflow = StateGraph(state_schema=MessagesState)
+workflow.add_node("model", call_model)
+workflow.add_edge(START, "model")
+
+# Mémoire persistante
+memory = MemorySaver()
+app = workflow.compile(checkpointer=memory)
+
+# Initialiser la session utilisateur
+user_id = input("Entrez votre prénom : ").strip().lower()
+config = {"configurable": {"thread_id": f"user_{user_id}"}}
+messages = []
+
+print("\nBienvenue à l'Hôtel California ! Camille est là pour vous aider 😊")
+print("Tapez 'exit' pour quitter.\n")
+
+# Boucle de conversation
+while True:
+    user_input = input(f"{user_id} > ").strip()
+    if user_input.lower() in {"exit", "quit"}:
+        print("Camille > Merci de votre visite. À bientôt ! 🌟")
+        break
+
+    messages.append(HumanMessage(content=user_input))
+    result = app.invoke({"messages": messages}, config)
+    response = result["messages"][-1]
+    messages = result["messages"]
+
+    print(f"Camille > {response.content}")

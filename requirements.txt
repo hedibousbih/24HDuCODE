@@ -2,6 +2,11 @@ fastapi
 uvicorn
 langchain
 requests
+langchain-core
+mistralai
+python-dotenv
+langgraph
+langchain[mistralai]
 #pip install streamlit
 #pip install gTTS
 #python -m streamlit run front.py
