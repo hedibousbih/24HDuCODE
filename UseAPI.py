@@ -8,15 +8,22 @@ HEADERS = {
     'Content-Type': 'application/json'
 }
 
-def get_restaurants():
+def get_restaurants(_input=None):
     """Récupère la liste des restaurants"""
     url = BASE_URL + "restaurants/"
     response = requests.get(url, headers=HEADERS)
-    
+
     if response.status_code == 200:
-        return response.json()  
-        print(f"Erreur {response.status_code}: {response.text}")
-        return None
+        data = response.json()
+        try:
+            restaurants = [r["name"] for r in data["results"]]
+            return "Restaurants disponibles : " + ", ".join(restaurants)
+        except KeyError:
+            return "Erreur : format inattendu de la réponse JSON (clé 'results' manquante)."
+    else:
+        return f"Erreur {response.status_code}: {response.text}"
+
+
 
 def create_reservation(client_id, restaurant_id, date, meal_id, guests, special_requests=""):
     """Crée une nouvelle réservation"""
@@ -64,3 +71,4 @@ if __name__ == "__main__":
 
     # Supprimer une réservation (exemple avec un ID fictif)
     delete_reservation(42)
+

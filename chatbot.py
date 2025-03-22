@@ -1,5 +1,3 @@
-# camille_assistant.py
-
 import os
 import uuid
 from langchain.chat_models import init_chat_model
@@ -8,8 +6,21 @@ from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langgraph.graph import StateGraph, START, MessagesState
 from langgraph.checkpoint.memory import MemorySaver
 from dotenv import load_dotenv, find_dotenv
+from agent_config import agent
 
 load_dotenv(find_dotenv())
+print("Bienvenue à l’Hôtel California ! Camille est là pour vous aider.")
+print("Tapez 'exit' pour quitter.")
+
+while True:
+    user_input = input("Vous > ").strip()
+    if user_input.lower() in ["exit", "quit"]:
+        print("Camille > Merci pour votre visite. À bientôt ! 🌟")
+        break
+
+    response = agent.invoke(user_input)
+    print("Camille >", response)
+
 api_key = os.getenv("MISTRAL_API_KEY")
 if not api_key:
     raise ValueError("MISTRAL_API_KEY not found in .env file")
