@@ -2,3 +2,6 @@ fastapi
 uvicorn
 langchain
 requests
+#pip install streamlit
+#pip install gTTS
+#python -m streamlit run front.py
