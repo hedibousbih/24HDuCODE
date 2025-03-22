@@ -7,7 +7,9 @@ from UseAPI import get_restaurants
 restaurant_tool = Tool.from_function(
     func=get_restaurants,
     name="getRestaurants",
-    description="Utilise cette fonction pour obtenir la liste des restaurants disponibles à l'hôtel."
+    description="Utilise cette fonction pour obtenir la liste des restaurants disponibles à l'hôtel.",
+    verbose=True,
+    handle_parsing_errors=True
 )
 load_dotenv()
 model = init_chat_model("mistral-large-latest", model_provider="mistralai")

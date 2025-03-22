@@ -42,6 +42,7 @@ prompt_template = ChatPromptTemplate.from_messages([
         "Adapte ta réponse à la langue du client automatiquement. "
         "Si tu ne comprends pas, demande poliment plus de détails. "
         "Fais tout ton possible pour créer une expérience agréable."
+        "Ne réponds pas directement à l'utilisateur et n'indique pas la réponse finale tant que tu n'as pas terminé tous les appels d'outils nécessaires."
     )),
     MessagesPlaceholder(variable_name="messages")
 ])
