@@ -4,12 +4,13 @@ from langchain.agents import initialize_agent, AgentType
 from dotenv import load_dotenv
 from UseAPI import get_restaurants,create_reservation, get_restaurant_name_to_id_map
 
+# Tool
 restaurant_tool = Tool.from_function(
     func=get_restaurants,
     name="getRestaurants",
     description="Utilise cette fonction pour obtenir la liste des restaurants disponibles à l'hôtel.",
-    
-    handle_parsing_errors=True
+    verbose=True,
+    handle_parsing_errors=True  # important
 )
 
 def create_reservation_tool_func(client_id, restaurant_name, date, meal_id, guests, special_requests=""):
@@ -95,10 +96,13 @@ model = init_chat_model("mistral-large-latest", model_provider="mistralai")
 
 tools = [restaurant_tool, create_reservation_tool]
 
+tools = [restaurant_tool, create_reservation_tool]
+
+# 👇 Agent corrigé ici :
 agent = initialize_agent(
     tools=tools,
     llm=model,
-    agent_type=AgentType.OPENAI_FUNCTIONS,
+    agent_type=AgentType.ZERO_SHOT_REACT_DESCRIPTION,  # ✅ Plus tolérant
     verbose=True,
     handle_parsing_errors=True
 )
