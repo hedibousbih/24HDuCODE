@@ -72,3 +72,13 @@ if __name__ == "__main__":
     # Supprimer une réservation (exemple avec un ID fictif)
     delete_reservation(42)
 
+#function to map restaurant names to id
+def get_restaurant_name_to_id_map():
+    url = BASE_URL + "restaurants/"
+    response = requests.get(url, headers=HEADERS)
+
+    if response.status_code == 200:
+        data = response.json()
+        return {r["name"].lower(): r["id"] for r in data["results"]}
+    else:
+        return {}
