@@ -3,6 +3,7 @@ from langchain.chat_models import init_chat_model
 from langchain.agents import initialize_agent, AgentType
 from dotenv import load_dotenv
 from UseAPI import get_restaurants,create_reservation, get_restaurant_name_to_id_map
+from parser import SafeAgentOutputParser
 
 # Tool
 restaurant_tool = Tool.from_function(
@@ -102,8 +103,10 @@ tools = [restaurant_tool, create_reservation_tool]
 agent = initialize_agent(
     tools=tools,
     llm=model,
-    agent_type=AgentType.ZERO_SHOT_REACT_DESCRIPTION,  # ✅ Plus tolérant
+    agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
     verbose=True,
-    handle_parsing_errors=True
+    agent_kwargs={"output_parser": SafeAgentOutputParser()},
+    max_iterations=5
+    
 )
 
