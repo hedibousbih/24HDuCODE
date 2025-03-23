@@ -1,5 +1,6 @@
 import pygame
 import sys
+import pyttsx3
 from PIL import Image
 from agent_config import agent
 
@@ -13,6 +14,12 @@ pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Camille - Chat IA")
 clock = pygame.time.Clock()
+
+# --- TTS ENGINE ---
+engine = pyttsx3.init()
+engine.setProperty('rate', 170)
+voices = engine.getProperty('voices')
+engine.setProperty('voice', voices[0].id)  # Change index if needed
 
 # --- LOAD ASSETS ---
 bg = pygame.image.load("bg_lobby.jpg").convert()
@@ -81,6 +88,12 @@ def typewriter_response(text):
     global is_talking, frame_index, frame_timer
     is_talking = True
     typed = ""
+
+    # TTS in a non-blocking way using engine.iterate()
+    engine.stop()
+    engine.say(text)
+    engine.runAndWait()
+
     for char in text:
         typed += char
         if history and history[-1][0] == "ai":
@@ -100,6 +113,7 @@ def typewriter_response(text):
         screen.blit(input_display, (50, SCREEN_HEIGHT - 55))
         pygame.display.flip()
         pygame.time.delay(20)
+
     is_talking = False
 
 # --- MAIN LOOP ---
