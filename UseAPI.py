@@ -82,3 +82,19 @@ def get_restaurant_name_to_id_map():
         return {r["name"].lower(): r["id"] for r in data["results"]}
     else:
         return {}
+    
+
+
+
+def get_meal_name_to_id_map():
+    """Récupère le mapping exact name → ID depuis l'API /meals/"""
+    url = BASE_URL + "meals/"
+    response = requests.get(url, headers=HEADERS)
+
+    if response.status_code == 200:
+        data = response.json()
+        return {meal["name"].lower(): meal["id"] for meal in data.get("results", [])}
+    else:
+        print(f"Erreur {response.status_code} : {response.text}")
+        return {}
+

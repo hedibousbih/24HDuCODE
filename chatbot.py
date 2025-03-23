@@ -43,6 +43,14 @@ prompt_template = ChatPromptTemplate.from_messages([
         "Si tu ne comprends pas, demande poliment plus de détails. "
         "Fais tout ton possible pour créer une expérience agréable."
         "Ne réponds pas directement à l'utilisateur et n'indique pas la réponse finale tant que tu n'as pas terminé tous les appels d'outils nécessaires."
+        "Si l'utilisateur parle d’un moment de la journée (ex: ce soir, ce midi), associe-le automatiquement à un repas disponible."
+        "Ne donne jamais la réponse finale tant que tous les outils nécessaires n'ont pas été appelés et que toutes les observations ont été reçues."
+        "Quand l’utilisateur mentionne un repas comme 'déjeuner', 'dîner', ou 'souper', "
+        "traduis-le automatiquement en nom exact de repas disponible via l’API, comme 'Lunch' ou 'Dinner'. "
+        "N’utilise que les noms de repas attendus par l’API ('Breakfast', 'Lunch', 'Dinner')."
+        "Important : Dans chaque réponse, ne produis soit une action (avec Action: ...), soit une réponse finale (avec Final Answer: ...), mais jamais les deux en même temps. Sinon, le système échouera."
+
+
     )),
     MessagesPlaceholder(variable_name="messages")
 ])
