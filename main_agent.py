@@ -90,9 +90,7 @@ def typewriter_response(text):
     typed = ""
 
     # TTS in a non-blocking way using engine.iterate()
-    engine.stop()
-    engine.say(text)
-    engine.runAndWait()
+    
 
     for char in text:
         typed += char
@@ -113,7 +111,9 @@ def typewriter_response(text):
         screen.blit(input_display, (50, SCREEN_HEIGHT - 55))
         pygame.display.flip()
         pygame.time.delay(20)
-
+    engine.stop()
+    engine.say(text)
+    engine.runAndWait()
     is_talking = False
 
 # --- MAIN LOOP ---
